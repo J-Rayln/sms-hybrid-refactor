@@ -15,6 +15,6 @@ class Auth implements MiddlewareInterface
      */
     public function handle(): void
     {
-        // TODO: Implement handle() method.
+        var_dump('this is the auth middleware');
     }
 }

@@ -71,17 +71,17 @@ class Router
         return $this->add('PUT', $path, $controller, $middleware);
     }
 
+    /**
+     * Resolves the current URL to the $routes[] map and parses any parameters
+     * passed.
+     *
+     * @throws \Exception An exception is thrown if middleware is specified in
+     *                    the route that does not exist.
+     */
     public function resolve()
     {
         $callback = $this->routes[$this->request->method()][$this->request->path()] ?? false;
-
-        echo '<pre style="color: red">' . __FILE__ . ' (' . __LINE__ . ')</pre>';
-        echo '<pre>';
-        print_r($callback);
-        echo '</pre>';
-
-        $middleware = $route['middleware'] ?? null;
-
+        $middleware = $callback['middleware'] ?? null;
 
         if (!$callback) {
 
@@ -93,20 +93,13 @@ class Router
             }
         }
 
-        echo '<pre style="color: red">' . __FILE__ . ' (' . __LINE__ . ')</pre>';
-        echo '<pre>';
-        print_r($callback);
-        echo '</pre>';
-
         // Instantiate the controller
         $controller = new $callback['controller'][0]();
         // Put the controller object back into the $callback
         $callback['controller'][0] = $controller;
 
-        echo '<pre style="color: red">' . __FILE__ . ' (' . __LINE__ . ')</pre>';
-        echo '<pre>';
-        print_r($callback);
-        echo '</pre>';
+        // Resolve the specified middleware (default if none is specified).
+        Middleware::resolve($middleware);
 
         return call_user_func([$callback['controller'][0], $callback['controller'][1]], $this->request, $this->response);
     }

@@ -19,7 +19,7 @@ $app->router->get('/', [SiteController::class, 'index']);
 $app->router->post('/', [SiteController::class, 'index']);
 
 // standard action
-$app->router->get('/about', [SiteController::class, 'about'], 'middlewareadfadfdf');
+$app->router->get('/about', [SiteController::class, 'about'], 'authsd');
 // optional variable
 $app->router->get('/about/{id:\d+}/{username}', [SiteController::class, 'foo'], 'autadfadfh');
 $app->router->get('/about/{username}', [SiteController::class, 'foo'], 'autadfadfh');
