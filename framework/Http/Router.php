@@ -73,18 +73,95 @@ class Router
 
     public function resolve()
     {
-        $callback = $this->routes[$this->request->method()][$this->request->path()]['controller'] ?? false;
+        $callback = $this->routes[$this->request->method()][$this->request->path()] ?? false;
+
+        echo '<pre style="color: red">' . __FILE__ . ' (' . __LINE__ . ')</pre>';
+        echo '<pre>';
+        print_r($callback);
+        echo '</pre>';
+
+        $middleware = $route['middleware'] ?? null;
+
 
         if (!$callback) {
-            $this->response->setStatusCode(500);
-            exit('there is no callback for that path');
+
+            $callback = $this->parseRouteParams($this->request->method(), $this->request->path());
+
+            if ($callback === false) {
+                $this->response->setStatusCode(500);
+                exit('there is no callback for that path');
+            }
         }
 
-        // Instantiate the controller
-        $controller = new $callback[0]();
-        // Put the controller object back into the $callback
-        $callback[0] = $controller;
+        echo '<pre style="color: red">' . __FILE__ . ' (' . __LINE__ . ')</pre>';
+        echo '<pre>';
+        print_r($callback);
+        echo '</pre>';
 
-        return call_user_func($callback, $this->request, $this->response);
+        // Instantiate the controller
+        $controller = new $callback['controller'][0]();
+        // Put the controller object back into the $callback
+        $callback['controller'][0] = $controller;
+
+        echo '<pre style="color: red">' . __FILE__ . ' (' . __LINE__ . ')</pre>';
+        echo '<pre>';
+        print_r($callback);
+        echo '</pre>';
+
+        return call_user_func([$callback['controller'][0], $callback['controller'][1]], $this->request, $this->response);
+    }
+
+    /**
+     * Parses route params for routes containing wildcards and returns a valid
+     * $callback to the resolve() method.
+     *
+     * Example routes might be:
+     * * /profile/{id:\d+}/{username}
+     * * /login/{id}
+     *
+     * @param string $method
+     * @param string $path
+     * @return false|array
+     */
+    protected function parseRouteParams(string $method, string $path): bool|array
+    {
+        $path = trim($path, '/');
+
+        // Get all routes for the current request method
+        $routes = $this->routes[$method] ?? [];
+
+        $routeParams = false;
+
+        // Iterate over registered routes
+        foreach ($routes as $route => $callback) {
+            $route = trim($route, '/');
+            $routeNames = [];
+
+            if (!$route) {
+                continue;
+            }
+
+            // Find all route names from $route and save in $routeNames
+            if (preg_match_all('/\{(\w+)(:[^}]+)?}/', $route, $matches)) {
+                $routeNames = $matches[1];
+            }
+
+            // Convert route names into regex pattern
+            $routeRegex = "@^" . preg_replace_callback('/\{\w+(:([^}]+))?}/', fn($m) => isset($m[2]) ? "({$m[2]})" : '([\w-]+)', $route) . "$@";
+
+            // Test and match current route against $routeRegex
+            if (preg_match_all($routeRegex, $path, $valueMatches)) {
+                $values = [];
+                for ($i = 1; $i < count($valueMatches); $i++) {
+                    $values[] = $valueMatches[$i][0];
+                }
+                $routeParams = array_combine($routeNames, $values);
+
+                $this->request->setRouteParams($routeParams);
+                return $callback;
+            }
+        }
+
+        return false;
     }
 }

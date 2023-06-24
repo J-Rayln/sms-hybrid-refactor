@@ -23,6 +23,15 @@ class SiteController
 
     public function about()
     {
+        var_dump('this is the about method');
+    }
+
+    public function foo(Request $request)
+    {
         var_dump('this is the foo method');
+        echo '<pre>';
+        var_dump($request->getRouteParams());
+        echo '</pre>';
+        exit;
     }
 }
