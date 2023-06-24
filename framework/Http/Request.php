@@ -9,6 +9,8 @@ namespace JonathanRayln\Framework\Http;
  */
 class Request
 {
+    private array $routeParams = [];
+
     /**
      * Gets the current request method.  If a custom method has been set
      * via a POST request, that value is used, otherwise the value is taken
@@ -43,5 +45,29 @@ class Request
     public static function isPost(): bool
     {
         return Application::$app->request->method() === 'POST';
+    }
+
+    /**
+     * Sets route parameters passed through the url to be accessed using the
+     * getRouteParams() method.
+     *
+     * @param array $routeParams Parsed route params created by the Router.
+     * @return $this
+     */
+    public function setRouteParams(array $routeParams): static
+    {
+        $this->routeParams = $routeParams;
+        return $this;
+    }
+
+    /**
+     * Gets stored $routeParams created by the Router from passing parameters
+     * through the URL.
+     *
+     * @return array
+     */
+    public function getRouteParams(): array
+    {
+        return $this->routeParams;
     }
 }

@@ -19,17 +19,12 @@ $app->router->get('/', [SiteController::class, 'index']);
 $app->router->post('/', [SiteController::class, 'index']);
 
 // standard action
-$app->router->get('/about', [SiteController::class, 'about']);
+$app->router->get('/about', [SiteController::class, 'about'], 'auth');
 // optional variable
-$app->router->get('/about/{id:\+d}', [SiteController::class, 'individual']);
+$app->router->get('/about/{id:\d+}/{username}', [SiteController::class, 'foo']);
+$app->router->get('/about/{username}', [SiteController::class, 'foo']);
 // No action
 $app->router->get('/help', [SiteController::class]);
 
 
 $app->run();
-?>
-
-<form method="post">
-    <input type="text" name="myname">
-    <button type="submit">Submit</button>
-</form>

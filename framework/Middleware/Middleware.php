@@ -10,8 +10,8 @@ namespace JonathanRayln\Framework\Middleware;
 class Middleware
 {
     /** @var string Default middleware to apply if none is specified. */
-    public const DEFAULT_MIDDLEWARE = 'default';
-    
+    public const DEFAULT_MIDDLEWARE = 'guest';
+
     /** @var array[] Associative array of middleware classes to apply. */
     public const MAP = [
         'auth'  => Auth::class,
