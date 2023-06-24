@@ -19,10 +19,10 @@ $app->router->get('/', [SiteController::class, 'index']);
 $app->router->post('/', [SiteController::class, 'index']);
 
 // standard action
-$app->router->get('/about', [SiteController::class, 'about'], 'authsd');
+$app->router->get('/about', [SiteController::class, 'about'], 'auth');
 // optional variable
-$app->router->get('/about/{id:\d+}/{username}', [SiteController::class, 'foo'], 'autadfadfh');
-$app->router->get('/about/{username}', [SiteController::class, 'foo'], 'autadfadfh');
+$app->router->get('/about/{id:\d+}/{username}', [SiteController::class, 'foo']);
+$app->router->get('/about/{username}', [SiteController::class, 'foo']);
 // No action
 $app->router->get('/help', [SiteController::class]);
 

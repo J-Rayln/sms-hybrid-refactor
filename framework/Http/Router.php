@@ -81,7 +81,6 @@ class Router
     public function resolve()
     {
         $callback = $this->routes[$this->request->method()][$this->request->path()] ?? false;
-        $middleware = $callback['middleware'] ?? null;
 
         if (!$callback) {
 
@@ -99,7 +98,7 @@ class Router
         $callback['controller'][0] = $controller;
 
         // Resolve the specified middleware (default if none is specified).
-        Middleware::resolve($middleware);
+        Middleware::resolve($callback['middleware']);
 
         return call_user_func([$callback['controller'][0], $callback['controller'][1]], $this->request, $this->response);
     }
