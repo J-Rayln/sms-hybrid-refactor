@@ -34,4 +34,14 @@ class Request
         $path = parse_url($_SERVER['REQUEST_URI'])['path'];
         return ($path === '/') ? $path : rtrim($path, '/');
     }
+
+    /**
+     * If a request is a POST request.
+     *
+     * @return bool
+     */
+    public static function isPost(): bool
+    {
+        return Application::$app->request->method() === 'POST';
+    }
 }

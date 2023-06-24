@@ -2,7 +2,7 @@
 
 namespace EduLink\Controllers;
 
-use JonathanRayln\Framework\Http\Application;
+use JonathanRayln\Framework\Http\Request;
 
 /**
  * Class SiteController
@@ -13,7 +13,7 @@ class SiteController
 {
     public function index()
     {
-        if (Application::$app->request->method() === 'POST') {
+        if (Request::isPost()) {
             echo 'posted';
         }
         echo '<pre>';

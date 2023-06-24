@@ -27,3 +27,9 @@ $app->router->get('/help', [SiteController::class]);
 
 
 $app->run();
+?>
+
+<form method="post">
+    <input type="text" name="myname">
+    <button type="submit">Submit</button>
+</form>

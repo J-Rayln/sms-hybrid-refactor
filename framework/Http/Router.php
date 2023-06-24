@@ -85,12 +85,6 @@ class Router
         // Put the controller object back into the $callback
         $callback[0] = $controller;
 
-        echo '<pre style="color: red">' . __FILE__ . ' (' . __LINE__ . ')</pre>';
-        echo '<pre>';
-        print_r($this->routes);
-        echo '</pre>';
-        exit;
-
         return call_user_func($callback, $this->request, $this->response);
     }
 }
