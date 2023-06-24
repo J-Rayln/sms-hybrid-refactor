@@ -2,6 +2,8 @@
 
 namespace JonathanRayln\Framework\Http;
 
+use JonathanRayln\Framework\Middleware\Middleware;
+
 /**
  * Class Router
  *
@@ -9,8 +11,16 @@ namespace JonathanRayln\Framework\Http;
  */
 class Router
 {
+    public Request $request;
+    public Response $response;
     protected array $routes = [];
-    protected string $middleware = 'default2';
+    protected string $middleware = Middleware::DEFAULT_MIDDLEWARE;
+
+    public function __construct(Request $request, Response $response)
+    {
+        $this->request = $request;
+        $this->response = $response;
+    }
 
     /**
      * Adds a new route to the $routes[] array for the given $method and $path.
@@ -30,7 +40,7 @@ class Router
     {
         $this->routes[$method][$path] = [
             'controller' => $controller,
-            'middleware' => $middleware,
+            'middleware' => $middleware ?? $this->middleware,
         ];
 
         return $this;
@@ -61,43 +71,26 @@ class Router
         return $this->add('PUT', $path, $controller, $middleware);
     }
 
-    public function method()
+    public function resolve()
     {
-        return $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
-    }
+        $callback = $this->routes[$this->request->method()][$this->request->path()]['controller'] ?? false;
 
-    /**
-     * Parses the $_SERVER['REQUEST_URI'] and returns the 'path' key,
-     * effectively ignoring any query string present in the URL.  If the result
-     * is '/' (the root URL of the site), that is returned.  If not, any trailing
-     * slashes are trimmed.
-     *
-     * @return string
-     */
-    public function path(): string
-    {
-        $path = parse_url($_SERVER['REQUEST_URI'])['path'];
-        return ($path === '/') ? $path : rtrim($path, '/');
-    }
-
-    public function resolve(): void
-    {
-        try {
-            $callback = $this->routes[$this->method()][$this->path()]['controller'] ?? false;
-
-            if (!$callback) {
-                exit('there is no callback for that path');
-            }
-
-            // Instantiate the controller
-            $controller = new $callback[0]();
-            // Put the controller object back into the $callback
-            $callback[0] = $controller;
-
-            call_user_func($callback);
-
-        } catch (\TypeError $e) {
-            echo $e->getMessage();
+        if (!$callback) {
+            $this->response->setStatusCode(500);
+            exit('there is no callback for that path');
         }
+
+        // Instantiate the controller
+        $controller = new $callback[0]();
+        // Put the controller object back into the $callback
+        $callback[0] = $controller;
+
+        echo '<pre style="color: red">' . __FILE__ . ' (' . __LINE__ . ')</pre>';
+        echo '<pre>';
+        print_r($this->routes);
+        echo '</pre>';
+        exit;
+
+        return call_user_func($callback, $this->request, $this->response);
     }
 }

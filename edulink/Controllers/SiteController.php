@@ -2,6 +2,8 @@
 
 namespace EduLink\Controllers;
 
+use JonathanRayln\Framework\Http\Application;
+
 /**
  * Class SiteController
  *
@@ -11,6 +13,9 @@ class SiteController
 {
     public function index()
     {
+        if (Application::$app->request->method() === 'POST') {
+            echo 'posted';
+        }
         echo '<pre>';
         print_r('[SiteController::class], index');
         echo '</pre>';

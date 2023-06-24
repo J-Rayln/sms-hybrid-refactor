@@ -15,14 +15,15 @@ $dotenv->load();
 
 $app = new Application();
 
-$app->router->get('/', [SiteController::class, 'index'], 'auth');
+$app->router->get('/', [SiteController::class, 'index']);
+$app->router->post('/', [SiteController::class, 'index']);
 
 // standard action
-$app->router->get('/about', [SiteController::class, 'about'], 'foo');
+$app->router->get('/about', [SiteController::class, 'about']);
 // optional variable
 $app->router->get('/about/{id:\+d}', [SiteController::class, 'individual']);
 // No action
-$app->router->get('/help', [SiteController::class], 'foo');
+$app->router->get('/help', [SiteController::class]);
 
 
 $app->run();
