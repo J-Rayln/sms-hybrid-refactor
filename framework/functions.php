@@ -24,3 +24,8 @@ function base_url(string $path = ''): string
 {
     return $_ENV['SITE_URL'] . $path;
 }
+
+function get_config(string $key): string
+{
+    return $_ENV[$key];
+}

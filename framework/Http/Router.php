@@ -94,6 +94,8 @@ class Router
 
         // Instantiate the controller
         $controller = new $callback['controller'][0]();
+        // Assign the current controller to the Application
+        Application::$app->controller = $controller;
         // Put the controller object back into the $callback
         $callback['controller'][0] = $controller;
 

@@ -2,6 +2,7 @@
 
 namespace EduLink\Controllers;
 
+use JonathanRayln\Framework\Http\Controller;
 use JonathanRayln\Framework\Http\Request;
 
 /**
@@ -9,16 +10,21 @@ use JonathanRayln\Framework\Http\Request;
  *
  * @package EduLink\Controllers;
  */
-class SiteController
+class SiteController extends Controller
 {
     public function index()
     {
         if (Request::isPost()) {
             echo 'posted';
         }
+        
         echo '<pre>';
-        print_r('[SiteController::class], index');
+        print_r($this);
         echo '</pre>';
+
+        return $this->render('test', [
+            'var' => 'value'
+        ]);
     }
 
     public function about()
