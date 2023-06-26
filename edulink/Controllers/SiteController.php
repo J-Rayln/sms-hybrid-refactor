@@ -22,8 +22,8 @@ class SiteController extends Controller
         print_r($this);
         echo '</pre>';
 
-        return $this->render('test', null, [
-            'var' => 'value'
+        return $this->render('test', 'Home Page', [
+            'foo' => 'bar'
         ]);
     }
 
