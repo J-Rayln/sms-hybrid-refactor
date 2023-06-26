@@ -23,9 +23,9 @@ class Controller
      *                         $template.
      * @return $this
      */
-    public function render(string $template, array $params = []): static
+    public function render(string $template, ?string $title = null, array $params = []): static
     {
-        echo Application::$app->template->renderTemplate($template, $params);
+        echo Application::$app->template->renderTemplate($template, $title, $params);
         return $this;
     }
 

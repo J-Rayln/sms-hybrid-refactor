@@ -14,21 +14,40 @@ class Template
     public const DEFAULT_LAYOUT = 'default';
     public const DEFAULT_ERROR_TEMPLATE = 'error';
     private const TEMPLATE_EXTENSION = '.phtml';
+    private string $appName;
+
+    public function __construct()
+    {
+        $this->appName = $_ENV['APP_NAME'];
+    }
 
     /**
-     * Renders the fully composed template view.
+     * Renders the fully composed template view.  {{content}} and {{title}}
+     * template tags are replaced with the page title passed to the render
+     * method and the view templated called.
      *
-     * @param string $template Template file to include as the {{content}} of
-     *                         the layout view.
-     * @param array  $params   Optional array of parameters to be passed to the
-     *                         $template.
+     * If $title is provided, the value is passed through the $params array
+     * and assigned a variable name of $pageTitle which can be called in the
+     * template views to render the page title passed down through the
+     * render method from the controller.  If null is provided for $title,
+     * the variable is still created but with a null value.
+     *
+     * @param string      $template Template file to include as the {{content}} of
+     *                              the layout view.
+     * @param string|null $title    Optional. The title of the page that is
+     *                              displayed in the &lt;title>&gt;&lt;/title&gt;
+     *                              tags of the HTML markup.
+     * @param array       $params   Optional array of parameters to be passed to
+     *                              the $template.
      * @return bool|string
      */
-    public function renderTemplate(string $template, array $params = []): bool|string
+    public function renderTemplate(string $template, ?string $title = null, array $params = []): bool|string
     {
+        $params = array_merge($params, ['pageTitle' => $title]);
+        $titleString = $this->renderPageTitle($title);
         $templateContent = $this->renderOnlyContent($template, $params);
         $layoutContent = $this->layoutContent();
-        return str_replace('{{content}}', $templateContent, $layoutContent);
+        return str_replace(['{{content}}', '{{title}}'], [$templateContent, $titleString], $layoutContent);
     }
 
     /**
@@ -67,5 +86,31 @@ class Template
         ob_start();
         include_once Application::TEMPLATE_DIR . $template . self::TEMPLATE_EXTENSION;
         return ob_get_clean();
+    }
+
+    /**
+     * Renders only the page title passed to the render method.
+     *
+     * @param string|null $title
+     * @return string|null
+     */
+    protected function renderOnlyTitle(?string $title): ?string
+    {
+        return $title;
+    }
+
+    /**
+     * Renders the full page title, if one is provided.  If no title is passed,
+     * the site name is rendered alone.
+     *
+     * @param string|null $title Page title to be rendered
+     * @return string
+     */
+    protected function renderPageTitle(?string $title): string
+    {
+        $titleString = $title ?? '';
+        $separator = $title ? ' | ' : '';
+
+        return $titleString . $separator . $this->appName;
     }
 }

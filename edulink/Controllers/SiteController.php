@@ -17,12 +17,12 @@ class SiteController extends Controller
         if (Request::isPost()) {
             echo 'posted';
         }
-        
+
         echo '<pre>';
         print_r($this);
         echo '</pre>';
 
-        return $this->render('test', [
+        return $this->render('test', null, [
             'var' => 'value'
         ]);
     }
