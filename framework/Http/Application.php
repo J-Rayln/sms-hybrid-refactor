@@ -2,6 +2,8 @@
 
 namespace JonathanRayln\Framework\Http;
 
+use JonathanRayln\Framework\Template\Template;
+
 /**
  * Class Application
  *
@@ -10,9 +12,13 @@ namespace JonathanRayln\Framework\Http;
 class Application
 {
     public static Application $app;
+    public const TEMPLATE_DIR = BASE_PATH . 'edulink/templates/';
+    public string $layout = Template::DEFAULT_LAYOUT;
     public Request $request;
     public Response $response;
     public Router $router;
+    public ?Controller $controller = null;
+    public Template $template;
 
     public function __construct()
     {
@@ -20,6 +26,7 @@ class Application
         $this->request = new Request();
         $this->response = new Response();
         $this->router = new Router($this->request, $this->response);
+        $this->template = new Template();
 
         $this->loadRequiredFiles();
     }
@@ -47,5 +54,25 @@ class Application
             echo $exception->getCode() . ' ' . $exception->getMessage();
             exit();
         }
+    }
+
+    /**
+     * Returns the controller for the current url path.
+     *
+     * @return \JonathanRayln\Framework\Http\Controller|null
+     */
+    public function getController(): ?Controller
+    {
+        return $this->controller;
+    }
+
+    /**
+     * Sets the controller for the current url path.
+     *
+     * @param \JonathanRayln\Framework\Http\Controller|null $controller
+     */
+    public function setController(?Controller $controller): void
+    {
+        $this->controller = $controller;
     }
 }
