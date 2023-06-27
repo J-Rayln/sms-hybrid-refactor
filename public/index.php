@@ -15,6 +15,8 @@ $dotenv->load();
 
 $app = new Application();
 
+require_once base_dir('services/web.php');
+
 $app->router->get('/', [SiteController::class, 'index']);
 $app->router->post('/', [SiteController::class, 'index']);
 

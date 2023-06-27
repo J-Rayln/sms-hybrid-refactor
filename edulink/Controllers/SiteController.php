@@ -2,6 +2,8 @@
 
 namespace EduLink\Controllers;
 
+use JonathanRayln\Framework\Database\Database;
+use JonathanRayln\Framework\Http\Application;
 use JonathanRayln\Framework\Http\Controller;
 use JonathanRayln\Framework\Http\Request;
 
@@ -14,6 +16,11 @@ class SiteController extends Controller
 {
     public function index()
     {
+        $db = Application::resolve(Database::class);
+        echo '<pre>';
+        var_dump($db);
+        echo '</pre>';
+        
         if (Request::isPost()) {
             echo 'posted';
         }

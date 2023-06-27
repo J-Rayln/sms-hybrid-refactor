@@ -14,6 +14,7 @@ class Application
     public static Application $app;
     public const TEMPLATE_DIR = BASE_PATH . 'edulink/templates/';
     public string $layout = Template::DEFAULT_LAYOUT;
+    public static $container;
     public Request $request;
     public Response $response;
     public Router $router;
@@ -74,5 +75,25 @@ class Application
     public function setController(?Controller $controller): void
     {
         $this->controller = $controller;
+    }
+
+    public static function setContainer($container)
+    {
+        static::$container = $container;
+    }
+
+    public static function container()
+    {
+        return static::$container;
+    }
+
+    public static function bind($key, $resolver)
+    {
+        static::container()->bind($key, $resolver);
+    }
+
+    public static function resolve($key)
+    {
+        return static::container()->resolve($key);
     }
 }
