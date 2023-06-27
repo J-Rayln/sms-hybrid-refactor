@@ -21,6 +21,8 @@ class Template
         $this->appName = $_ENV['APP_NAME'];
     }
 
+    // TODO find a way to inject scripts/stylesheets/etc in the <head> and footer of the layouts.  Perhaps pass it from the view file?
+
     /**
      * Renders the fully composed template view.  {{content}} and {{title}}
      * template tags are replaced with the page title passed to the render
